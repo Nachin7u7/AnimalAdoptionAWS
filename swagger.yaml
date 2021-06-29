@@ -1,14 +1,14 @@
 openapi: 3.0.0
 
 paths:
-  /adopter/{account_id}/pet/{petId}:
+  /pet/{petId}:
     get:
       summary: Given a user and a pet, show the pet information
       parameters:
-        - name: account_id
+        - name: pet_Id
           in: path
           required: true
-          description: client ID
+          description: pet ID
         - name: petId
           in: path
           required: true
@@ -16,16 +16,16 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::Account_Id}:function:getUser/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_Id}:function:getPet/invocations"
         httpMethod: "POST"
         
-    set:
+    put:
       summary: Edit the user and pet information
       parameters:
-        - name: account_id
+        - name: pet_id
           in: path
           required: true
-          description: client ID
+          description: pet ID
         - name: petId
           in: path
           required: true
@@ -50,31 +50,5 @@ paths:
         x-amazon-apigateway-integration:
           type: "aws_proxy"
           uri:
-            Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::Account_Id}:function:setUser/invocations"
+            Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_id}:function:putPet/invocations"
           httpMethod: "POST"
-    
-    add:
-      summary: Add a new user
-      parameters:
-        - name: account_id
-          in: path
-          required: true
-          description: client ID
-        - name: petId
-          in: path
-          required: true
-          description: pet ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                house_type:
-                  type: string
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::Account_Id}:function:addUser/invocations"
-        httpMethod: "POST"

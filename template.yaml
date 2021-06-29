@@ -5,37 +5,15 @@ Transform:
 
 Description: HusckyApi
 Resources:
-  SetUserFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: setUser
-      Environment:
-        Variables:
-          USERS_TABLE: !Ref DogsTable
-      Handler: Dogs.setUser
-      Runtime: python3.6
-      CodeUri: package/
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref DogsTable
-        - SNSCrudPolicy:
-            TopicName: !GetAtt MySNSTopic.TopicName
-      Events:
-        GetUsers:
-          Type: Api
-          Properties:
-            RestApiId: !Ref APIHuscky
-            Path: "/adopter/{adopterId}"
-            Method: SET
   
-  GetUserFunction:
+  GetPetFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getUser
+      FunctionName: getPet
       Environment:
         Variables:
           USERS_TABLE: !Ref DogsTable
-      Handler: Dogs.getUser
+      Handler: Dogs.getPet
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -46,17 +24,17 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref APIHuscky
-            Path: "/adopter/{adopterId}"
+            Path: "/pet/{petId}"
             Method: GET
             
-  addUserFunction:
+  putPetFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: addUser
+      FunctionName: putPet
       Environment:
         Variables:
           USERS_TABLE: !Ref DogsTable
-      Handler: Dogs.addUser
+      Handler: Dogs.putPet
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -64,15 +42,14 @@ Resources:
             TableName: !Ref DogsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref DogsTable
-        - SNSPublishMessagePolicy:
-            TopicName: !GetAtt MySNSTopic.TopicName
       Events:
         GetUsers:
           Type: Api
           Properties:
             RestApiId: !Ref APIHuscky
-            Path: "/adopter/{adopterId}/pet/{petId}"
+            Path: "/pet/{petId}"
             Method: PUT
+  
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -101,8 +78,3 @@ Resources:
           AttributeType: S
         - AttributeName: sk
           AttributeType: S
-          
-  MySNSTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: "N/A"
