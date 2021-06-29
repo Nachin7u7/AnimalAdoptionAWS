@@ -4,7 +4,7 @@ import json
 import boto3
 import os
 from botocore.exceptions import ClientError
-
+ ## Huscky Shelter API
 accounts_table = os.environ['ACCOUNTS-TABLE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(accounts_table)
