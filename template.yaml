@@ -1,0 +1,108 @@
+  
+AWSTemplateFormatVersion : '2010-09-09'
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: HusckyApi
+Resources:
+  SetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: setUser
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref DogsTable
+      Handler: Dogs.setUser
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref DogsTable
+        - SNSCrudPolicy:
+            TopicName: !GetAtt MySNSTopic.TopicName
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref APIHuscky
+            Path: "/adopter/{adopterId}"
+            Method: SET
+  
+  GetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUser
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref DogsTable
+      Handler: Dogs.getUser
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref DogsTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref APIHuscky
+            Path: "/adopter/{adopterId}"
+            Method: GET
+            
+  addUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: addUser
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref DogsTable
+      Handler: Dogs.addUser
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref DogsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DogsTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt MySNSTopic.TopicName
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref APIHuscky
+            Path: "/adopter/{adopterId}/pet/{petId}"
+            Method: PUT
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: my-api-gateway-9
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
+    
+  DogsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Dogs
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+          
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: "N/A"
