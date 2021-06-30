@@ -9,7 +9,7 @@ accounts_table = os.environ['ACCOUNTS-TABLE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(accounts_table)
 
-def putPet(event, context):
+def updatePet(event, context):
     print(json.dumps({"running": True}))
     print(json.dumps(event))
     path = event["path"]
@@ -35,23 +35,26 @@ def putPet(event, context):
     )
     
     
-def getPet(event, context):
+def deletePet(event, context):
     print(json.dumps({"running": True}))
     print(json.dumps(event))
-    path = event["path"]
-    pet_id = path.split("/")[-1] # ["user", "id"]
     
-    response = table.get_item(
+    path = event["path"]
+    pet_id=path.split("/")[-1]# ["user", "id"]
+    
+    response2 = table.get_item(
         Key={
             'pk': pet_id,
             'sk': 'profile'
         }
     )
-    item = response['Item']
-    return {
-        'statusCode': 200,
-        'body': json.dumps(item)
-    }
+    
+    
+    table.delete_item(
+            Key={
+                 'pk': pet_id
+            }
+        )
     
     return {
         'statusCode': 200,

@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 paths:
   /pet/{petId}:
-    get:
+    put:
       summary: Given a user and a pet, show the pet information
       parameters:
         - name: pet_Id
@@ -16,13 +16,13 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_Id}:function:getPet/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_Id}:function:updatePet/invocations"
         httpMethod: "POST"
         
-    put:
+    delete:
       summary: Edit the user and pet information
       parameters:
-        - name: pet_id
+        - name: pet_Id
           in: path
           required: true
           description: pet ID
@@ -30,25 +30,8 @@ paths:
           in: path
           required: true
           description: pet ID
-        
-        requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                doggy:
-                  type: string
-                race:
-                  type: string
-                age:
-                  type: string
-                  
-        x-amazon-apigateway-integration:
-          type: "aws_proxy"
-          uri:
-            Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_id}:function:putPet/invocations"
-          httpMethod: "POST"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::pet_Id}:function:deletePet/invocations"
+        httpMethod: "POST"

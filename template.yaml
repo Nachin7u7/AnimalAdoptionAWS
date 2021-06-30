@@ -6,14 +6,14 @@ Transform:
 Description: HusckyApi
 Resources:
   
-  GetPetFunction:
+  UpdatePetFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getPet
+      FunctionName: UpdatePet
       Environment:
         Variables:
           USERS_TABLE: !Ref DogsTable
-      Handler: Dogs.getPet
+      Handler: Dogs.UpdateetPet
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -27,14 +27,14 @@ Resources:
             Path: "/pet/{petId}"
             Method: GET
             
-  putPetFunction:
+  deletePetFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: putPet
+      FunctionName: deletePet
       Environment:
         Variables:
           USERS_TABLE: !Ref DogsTable
-      Handler: Dogs.putPet
+      Handler: Dogs.deletePet
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -48,7 +48,7 @@ Resources:
           Properties:
             RestApiId: !Ref APIHuscky
             Path: "/pet/{petId}"
-            Method: PUT
+            Method: DELETE
   
   MyAPI:
     Type: AWS::Serverless::Api
