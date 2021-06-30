@@ -25,7 +25,7 @@ Resources:
           Properties:
             RestApiId: !Ref APIHuscky
             Path: "/pet/{petId}"
-            Method: GET
+            Method: PUT
             
   deletePetFunction:
     Type: AWS::Serverless::Function
